@@ -16,9 +16,18 @@ import static com.epf.rentmanager.utils.IOUtils.print;
 
 public class ClientCLI {
     private ClientService clientService;
-    private VehicleService vehicleService;
+    private VehicleService vehicleService = VehicleService.getInstance();
 
     private ReservationService reservationService;
+
+    public static  void main(String []aaa ){
+        ClientCLI clientcli = new ClientCLI();
+        try {
+            clientcli.listVehicle();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
     public void creerClient() throws Exception{
     String nom = IOUtils.readString("Saisir nom :", true);
     String prenom = IOUtils.readString("Saisir prenom :", true);

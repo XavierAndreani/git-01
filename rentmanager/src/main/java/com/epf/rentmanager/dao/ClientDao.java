@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.epf.rentmanager.exception.DaoException;
 import com.epf.rentmanager.model.Client;
+import com.epf.rentmanager.persistence.ConnectionManager;
 
 public class ClientDao {
 	
@@ -23,19 +24,20 @@ public class ClientDao {
 	private static final String DELETE_CLIENT_QUERY = "DELETE FROM Client WHERE id=?;";
 	private static final String FIND_CLIENT_QUERY = "SELECT nom, prenom, email, naissance FROM Client WHERE id=?;";
 	private static final String FIND_CLIENTS_QUERY = "SELECT id, nom, prenom, email, naissance FROM Client;";
-	
+	private static final String COUNT_CLIENTS_QUERY = "SELECT COUNT(id) AS nb_clients FROM Client;";
+
 	public long create(Client client) throws DaoException {
-        try {
-			Connection connexion = DriverManager.getConnection("jdbc:h2:~/RentManagerDatabase", "user", "password");
-            Statement statement=connexion.createStatement();
-			PreparedStatement preparedStatement = connexion.prepareStatement(CREATE_CLIENT_QUERY, statement.RETURN_GENERATED_KEYS);
+        try (Connection connexion = DriverManager.getConnection("jdbc:h2:~/RentManagerDatabase", "user", "password");
+			 Statement statement=connexion.createStatement();
+			 PreparedStatement preparedStatement = connexion.prepareStatement(CREATE_CLIENT_QUERY, statement.RETURN_GENERATED_KEYS);){
+
 			preparedStatement.setString(1, client.getNom());
 			preparedStatement.setString(2, client.getPrenom());
 			preparedStatement.setString(3, client.getEmail());
 			preparedStatement.setDate(4, Date.valueOf(client.getNaissance()));
 			preparedStatement.execute();
-			ResultSet resultSet = statement.getGeneratedKeys();
-			if (resultSet.next()){
+			ResultSet resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()){   //verifier !
 				connexion.close();
 				return resultSet.getInt(1);
 			}
@@ -43,6 +45,21 @@ public class ClientDao {
             throw new DaoException(e);
         }
         return 0;
+	}
+	public int count() throws DaoException{
+		try(Connection connexion = ConnectionManager.getConnection();
+			PreparedStatement preparedStatement= connexion.prepareStatement(COUNT_CLIENTS_QUERY);
+			ResultSet resultSet= preparedStatement.executeQuery();){
+			if (resultSet.next()) {
+				return resultSet.getInt("nb_clients");
+			}else{
+				return (0);
+			}
+		}
+		catch (SQLException e){
+			throw new DaoException(e);
+		}
+
 	}
 	
 	public long delete(Client client) throws DaoException {

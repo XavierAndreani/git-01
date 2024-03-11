@@ -24,7 +24,15 @@ public class ClientService {
 		
 		return instance;
 	}
-	
+
+	public int count() throws ServiceException{
+		try{
+			return(clientDao.count());
+		}
+		catch (DaoException e){
+			throw new ServiceException(e.getMessage());
+		}
+	}
 	
 	public long create(Client client) throws ServiceException {
         try {

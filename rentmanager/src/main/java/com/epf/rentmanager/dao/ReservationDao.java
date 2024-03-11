@@ -6,9 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.epf.rentmanager.exception.DaoException;
-import com.epf.rentmanager.model.Client;
 import com.epf.rentmanager.model.Reservation;
-import com.epf.rentmanager.model.Vehicle;
+import com.epf.rentmanager.persistence.ConnectionManager;
 
 public class ReservationDao {
 
@@ -27,7 +26,8 @@ public class ReservationDao {
 	private static final String FIND_RESERVATIONS_BY_ID_QUERY = "SELECT client_id, vehicle_id, debut, fin FROM Reservation WHERE id=?;";
 	private static final String FIND_RESERVATIONS_BY_VEHICLE_QUERY = "SELECT id, client_id, debut, fin FROM Reservation WHERE vehicle_id=?;";
 	private static final String FIND_RESERVATIONS_QUERY = "SELECT id, client_id, vehicle_id, debut, fin FROM Reservation;";
-		
+	private static final String COUNT_RESERVATIONS_QUERY = "SELECT COUNT(id) AS nb_reservation FROM Reservation;";
+
 	public long create(Reservation reservation) throws DaoException {
 		try {
 			Connection connexion = DriverManager.getConnection("jdbc:h2:~/RentManagerDatabase", "user", "password");
@@ -165,6 +165,21 @@ public class ReservationDao {
 		}
 
 		return ListResa;
+
+	}
+	public int count() throws DaoException{
+		try(Connection connexion = ConnectionManager.getConnection();
+			PreparedStatement preparedStatement= connexion.prepareStatement(COUNT_RESERVATIONS_QUERY);
+			ResultSet resultSet= preparedStatement.executeQuery();){
+			if (resultSet.next()) {
+				return resultSet.getInt("nb_reservation");
+			}else{
+				return (0);
+			}
+		}
+		catch (SQLException e){
+			throw new DaoException(e);
+		}
 
 	}
 }
