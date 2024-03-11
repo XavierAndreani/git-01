@@ -20,14 +20,6 @@ public class ClientCLI {
 
     private ReservationService reservationService;
 
-    public static  void main(String []aaa ){
-        ClientCLI clientcli = new ClientCLI();
-        try {
-            clientcli.listVehicle();
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
-    }
     public void creerClient() throws Exception{
     String nom = IOUtils.readString("Saisir nom :", true);
     String prenom = IOUtils.readString("Saisir prenom :", true);

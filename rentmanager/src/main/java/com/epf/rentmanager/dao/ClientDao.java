@@ -104,19 +104,16 @@ public class ClientDao {
 
 	public List<Client> findAll() throws DaoException {
 		ArrayList<Client> ListClient = new ArrayList<>();
-		try{
-			Connection connexion = DriverManager.getConnection("jdbc:h2:~/RentManagerDatabase", "user", "password");
-			Statement statement = connexion.createStatement();
+		try(Connection connexion = ConnectionManager.getConnection();
 			PreparedStatement preparedStatement= connexion.prepareStatement(FIND_CLIENTS_QUERY);
+			ResultSet resultSet= preparedStatement.executeQuery();){
 
-			ResultSet resultSet= preparedStatement.executeQuery();
 			while (resultSet.next()){
 				int id =resultSet.getInt("id");
 				String nom=resultSet.getString("nom");
 				String prenom=resultSet.getString("prenom");
 				String email=resultSet.getString("email");
 				LocalDate naissance = resultSet.getDate("naissance").toLocalDate();
-				connexion.close();
 				ListClient.add(new Client(id, nom, prenom, email, naissance));
 
 			}

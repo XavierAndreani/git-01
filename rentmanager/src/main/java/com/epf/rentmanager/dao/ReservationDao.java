@@ -143,19 +143,17 @@ public class ReservationDao {
 
 	public List<Reservation> findAll() throws DaoException {
 		ArrayList<Reservation> ListResa = new ArrayList<>();
-		try{
-			Connection connexion = DriverManager.getConnection("jdbc:h2:~/RentManagerDatabase", "user", "password");
-			Statement statement = connexion.createStatement();
-			PreparedStatement preparedStatement= connexion.prepareStatement(FIND_RESERVATIONS_QUERY);
+		try(	Connection connexion = ConnectionManager.getConnection();
+				PreparedStatement preparedStatement= connexion.prepareStatement(FIND_RESERVATIONS_QUERY);
+				ResultSet resultSet= preparedStatement.executeQuery();
+				){
 
-			ResultSet resultSet= preparedStatement.executeQuery();
 			while (resultSet.next()){
 				int id=resultSet.getInt("id");
 				int clientId=resultSet.getInt("id_client");
 				int vehicleId=resultSet.getInt("id_vehicle");
 				LocalDate debut = resultSet.getDate("debut").toLocalDate();
 				LocalDate fin = resultSet.getDate("fin").toLocalDate();
-				connexion.close();
 				ListResa.add(new Reservation(id, clientId, vehicleId, debut, fin));
 
 			}
