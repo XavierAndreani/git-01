@@ -8,17 +8,13 @@ import java.util.List;
 import com.epf.rentmanager.exception.DaoException;
 import com.epf.rentmanager.model.Client;
 import com.epf.rentmanager.persistence.ConnectionManager;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class ClientDao {
-	
-	private static ClientDao instance = null;
+
 	private ClientDao() {}
-	public static ClientDao getInstance() {
-		if(instance == null) {
-			instance = new ClientDao();
-		}
-		return instance;
-	}
+
 	
 	private static final String CREATE_CLIENT_QUERY = "INSERT INTO Client(nom, prenom, email, naissance) VALUES(?, ?, ?, ?);";
 	private static final String DELETE_CLIENT_QUERY = "DELETE FROM Client WHERE id=?;";
@@ -27,7 +23,7 @@ public class ClientDao {
 	private static final String COUNT_CLIENTS_QUERY = "SELECT COUNT(id) AS nb_clients FROM Client;";
 
 	public long create(Client client) throws DaoException {
-        try (Connection connexion = DriverManager.getConnection("jdbc:h2:~/RentManagerDatabase", "user", "password");
+        try (Connection connexion = ConnectionManager.getConnection();
 			 Statement statement=connexion.createStatement();
 			 PreparedStatement preparedStatement = connexion.prepareStatement(CREATE_CLIENT_QUERY, statement.RETURN_GENERATED_KEYS);){
 
@@ -38,7 +34,6 @@ public class ClientDao {
 			preparedStatement.execute();
 			ResultSet resultSet = preparedStatement.getGeneratedKeys();
 			if (resultSet.next()){   //verifier !
-				connexion.close();
 				return resultSet.getInt(1);
 			}
         } catch (SQLException e) {
@@ -63,13 +58,12 @@ public class ClientDao {
 	}
 	
 	public long delete(Client client) throws DaoException {
-		try{
-			Connection connexion = DriverManager.getConnection("jdbc:h2:~/RentManagerDatabase", "user", "password");
-			Statement statement=connexion.createStatement();
-			PreparedStatement preparedStatement=connexion.prepareStatement(DELETE_CLIENT_QUERY);
+		try(Connection connexion = ConnectionManager.getConnection();
+			PreparedStatement preparedStatement=connexion.prepareStatement(DELETE_CLIENT_QUERY);){
+
 			preparedStatement.setInt(1, client.getId());
 			preparedStatement.execute();
-			ResultSet resultSet = statement.getGeneratedKeys();
+			ResultSet resultSet = preparedStatement.getGeneratedKeys();
 			if (resultSet.next()){
 				return resultSet.getInt(1);
 			}
@@ -83,23 +77,21 @@ public class ClientDao {
 	}
 
 	public Client findById(long id) throws DaoException {
-		try{
-			Connection connexion = DriverManager.getConnection("jdbc:h2:~/RentManagerDatabase", "user", "password");
-			Statement statement = connexion.createStatement();
-			PreparedStatement preparedStatement= connexion.prepareStatement(FIND_CLIENT_QUERY);
-			ResultSet resultSet= preparedStatement.executeQuery();
+		try(Connection connexion = ConnectionManager.getConnection();
+			PreparedStatement preparedStatement= connexion.prepareStatement(FIND_CLIENT_QUERY)){
 			preparedStatement.setInt(1, (int) id);
-			String nom=resultSet.getString("nom");
-			String prenom=resultSet.getString("prenom");
-			String email=resultSet.getString("email");
-			LocalDate naissance = resultSet.getDate("naissance").toLocalDate();
-			connexion.close();
-			resultSet.close();
-			return new Client((int) id, nom, prenom, email, naissance);
-			
+			ResultSet resultSet= preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				String nom = resultSet.getString("nom");
+				String prenom = resultSet.getString("prenom");
+				String email = resultSet.getString("email");
+				LocalDate naissance = resultSet.getDate("naissance").toLocalDate();
+				return new Client((int) id, nom, prenom, email, naissance);
+			}
 		} catch (SQLException e){
 			throw new DaoException(e);
 		}
+		return null;
     }
 
 	public List<Client> findAll() throws DaoException {

@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.h2.tools.DeleteDbFiles;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FillDatabase {
 
 

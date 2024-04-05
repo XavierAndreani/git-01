@@ -6,21 +6,18 @@ import com.epf.rentmanager.dao.ReservationDao;
 import com.epf.rentmanager.exception.DaoException;
 import com.epf.rentmanager.exception.ServiceException;
 import com.epf.rentmanager.model.Reservation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
 public class ReservationService {
     private ReservationDao reservationDao;
-    public static ReservationService instance;
 
-    private ReservationService() {
-        this.reservationDao = ReservationDao.getInstance();
+@Autowired
+    private ReservationService(ReservationDao reservationDao) {
+        this.reservationDao = reservationDao;
     }
 
-    public static ReservationService getInstance() {
-        if (instance == null) {
-            instance = new ReservationService();
-        }
-
-        return instance;
-    }
 
     public long create(Reservation reservation) throws ServiceException {
         try {
@@ -39,7 +36,7 @@ public class ReservationService {
         }
     }
 
-    public List<Reservation> findByIdClient(long id) throws ServiceException {
+    public List<Reservation> findByIdClient(int id) throws ServiceException {
         try {
             return(reservationDao.findResaByClientId(id));
         } catch (DaoException e) {
@@ -56,7 +53,7 @@ public class ReservationService {
         }
 
     }
-    public Reservation findById(long id) throws ServiceException {
+    public Reservation findById(int id) throws ServiceException {
         try {
             return(reservationDao.findResaById(id));
         } catch (DaoException e) {

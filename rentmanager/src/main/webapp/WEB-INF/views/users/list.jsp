@@ -40,16 +40,17 @@
     <td>${clients.email}</td>
     <td>${clients.naissance}</td>
     <!--<td>John Doe</td>-->
-                                    <td>
-                                        <a class="btn btn-primary" href="user-detail.html">
-                                        <i class="fa fa-play"></i>
-                                        </a>
+    <td>
+        <a class="btn btn-primary"
+           href="${pageContext.request.contextPath}/users/details?client_id=${clients.id}">
+            <i class="fa fa-play"></i>
+        </a>
                                         <a class="btn btn-success disabled" href="#">
                                             <i class="fa fa-edit"></i>
                                         </a>
-                                        <a class="btn btn-danger disabled" href="#">
-                                            <i class="fa fa-trash"></i>
-                                        </a>
+    <a class="btn btn-danger" href="${pageContext.request.contextPath}/users/delete?id=${clients.id}">
+        <i class="fa fa-trash"></i>
+    </a>
                                     </td>
                                 </tr>
                                 </c:forEach>

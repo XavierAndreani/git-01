@@ -1,4 +1,5 @@
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <%@include file="/WEB-INF/views/common/head.jsp"%>
@@ -25,41 +26,43 @@
                     <!-- Horizontal Form -->
                     <div class="box">
                         <!-- form start -->
-                        <form class="form-horizontal" method="post" action="/rents/create">
+                        <form class="form-horizontal" method="post">
                             <div class="box-body">
                                 <div class="form-group">
-                                    <label for="car" class="col-sm-2 control-label">Voiture</label>
+                                    <label for="vehicle_id" class="col-sm-2 control-label">Voiture</label>
 
                                     <div class="col-sm-10">
-                                        <select class="form-control" id="car" name="car">
-                                            <option value="1">Renault Clio</option>
-                                            <option value="2">Citroen C2</option>
+                                        <select class="form-control" id="vehicle_id" name="vehicle_id">
+                                            <c:forEach items="${vehicles}" var="vehicle" varStatus="loop">
+                                                <option value="${vehicle.id}">${vehicle.constructeur} ${vehicle.modele} </option>
+                                            </c:forEach>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="client" class="col-sm-2 control-label">Client</label>
+                                    <label for="client_id" class="col-sm-2 control-label">Client</label>
 
                                     <div class="col-sm-10">
-                                        <select class="form-control" id="client" name="client">
-                                            <option value="1">John Doe</option>
-                                            <option value="2">Jane Doe</option>
+                                        <select class="form-control" id="client_id" name="client_id">
+                                            <c:forEach items="${clients}" var="client" varStatus="loop">
+                                                <option value="${client.id}">${client.prenom} ${fn:toUpperCase(client.nom)}</option>
+                                            </c:forEach>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="begin" class="col-sm-2 control-label">Date de debut</label>
+                                    <label for="debut" class="col-sm-2 control-label">Date de debut</label>
 
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="begin" name="begin" required
+                                        <input type="text" class="form-control" id="debut" name="debut" required
                                                data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="end" class="col-sm-2 control-label">Date de fin</label>
+                                    <label for="fin" class="col-sm-2 control-label">Date de fin</label>
 
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="end" name="end" required
+                                        <input type="text" class="form-control" id="fin" name="fin" required
                                                data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
                                     </div>
                                 </div>

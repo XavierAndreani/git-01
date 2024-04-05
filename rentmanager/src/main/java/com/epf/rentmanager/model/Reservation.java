@@ -67,6 +67,7 @@ public class Reservation {
         this.fin = fin;
     }
 
+
     @Override
     public String toString() {
         return "Reservation{" +

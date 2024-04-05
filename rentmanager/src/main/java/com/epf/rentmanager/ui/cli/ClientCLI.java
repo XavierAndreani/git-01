@@ -16,7 +16,7 @@ import static com.epf.rentmanager.utils.IOUtils.print;
 
 public class ClientCLI {
     private ClientService clientService;
-    private VehicleService vehicleService = VehicleService.getInstance();
+    private VehicleService vehicleService;
 
     private ReservationService reservationService;
 

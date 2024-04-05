@@ -17,6 +17,9 @@ public class Client{
         this.email = email;
         this.naissance = naissance;
     }
+    public Client(int id) {
+        this.id = id;
+    }
 
     @Override
     public String toString() {

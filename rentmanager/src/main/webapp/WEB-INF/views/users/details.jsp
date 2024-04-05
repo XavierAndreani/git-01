@@ -1,7 +1,7 @@
-<%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
-<html>
-<%@include file="/WEB-INF/views/common/head.jsp"%>
+<html lang="fr">
+<%@include file="/WEB-INF/views/common/head.jsp" %>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
 
@@ -20,14 +20,15 @@
                     <!-- Profile Image -->
                     <div class="box box-primary">
                         <div class="box-body box-profile">
-                            <h3 class="profile-username text-center">John Doe (john.doe@epf.fr)</h3>
+                            <h3 class="profile-username text-center">${client.nom} ${client.prenom}
+                                (${client.email})</h3>
 
                             <ul class="list-group list-group-unbordered">
                                 <li class="list-group-item">
-                                    <b>Reservation(s)</b> <a class="pull-right">2</a>
+                                    <b>Reservation(s)</b> <a class="pull-right">${reservations.size()}</a>
                                 </li>
                                 <li class="list-group-item">
-                                    <b>Voiture(s)</b> <a class="pull-right">3</a>
+                                    <b>Voiture(s)</b> <a class="pull-right">${nb_vehicle_unique}</a>
                                 </li>
                             </ul>
                         </div>
@@ -40,7 +41,7 @@
                     <div class="nav-tabs-custom">
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#rents" data-toggle="tab">Reservations</a></li>
-                            <li><a href="#cars" data-toggle="tab">Voitures</a></li>
+                            <li><a href="#vehicles" data-toggle="tab">Voitures</a></li>
                         </ul>
                         <div class="tab-content">
                             <div class="active tab-pane" id="rents">
@@ -52,50 +53,68 @@
                                             <th>Date de debut</th>
                                             <th>Date de fin</th>
                                         </tr>
-                                        <tr>
-                                            <td>3.</td>
-                                            <td>Renault Megane</td>
-                                            <td>10/01/2018</td>
-                                            <td>12/01/2018</td>
-                                        </tr>
-                                        <tr>
-                                            <td>7.</td>
-                                            <td>Peugeot 207</td>
-                                            <td>10/01/2018</td>
-                                            <td>12/01/2018</td>
-                                        </tr>
+                                        <c:forEach items="${reservations}" var="resa" varStatus="loop">
+                                            <tr>
+                                                <td>${resa.id}</td>
+                                                <td>${resa.debut}</td>
+                                                <td>${resa.fin}</td>
+                                                <td>
+                                                    <form method="post">
+                                                        <a class="btn btn-success "
+                                                           href="${pageContext.request.contextPath}/rents/update?id_reservation=${resa.id}">
+                                                            <i class="fa fa-edit"></i>
+                                                        </a>
+                                                        <input type="hidden" name="reservationId"
+                                                               value="${resa.id}">
+                                                        <button name="action" value="delete_reservation" type="submit"
+                                                                class="btn btn-danger">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
                                     </table>
                                 </div>
                             </div>
                             <!-- /.tab-pane -->
-                            <div class="tab-pane" id="cars">
+                            <div class="tab-pane" id="vehicles">
                                 <!-- /.box-header -->
                                 <div class="box-body no-padding">
                                     <table class="table table-striped">
                                         <tr>
                                             <th style="width: 10px">#</th>
-                                            <th>Modele</th>
                                             <th>Constructeur</th>
+                                            <th>Modele</th>
                                             <th style=>Nombre de places</th>
                                         </tr>
-                                        <tr>
-                                            <td>1.</td>
-                                            <td>Renault</td>
-                                            <td>Clio</td>
-                                            <td>5</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2.</td>
-                                            <td>Peugeot</td>
-                                            <td>206</td>
-                                            <td>5</td>
-                                        </tr>
-                                        <tr>
-                                            <td>3.</td>
-                                            <td>Volkswagen</td>
-                                            <td>Touran</td>
-                                            <td>7</td>
-                                        </tr>
+                                        <c:forEach items="${vehicles}" var="vehicle" varStatus="loop">
+                                            <tr>
+                                                <td>${vehicle.id}</td>
+                                                <td>${vehicle.constructeur}</td>
+                                                <td>${vehicle.modele}</td>
+                                                <td>${vehicle.nb_places}</td>
+                                                <td>
+                                                    <form method="post">
+                                                        <a class="btn btn-success "
+                                                           href="${pageContext.request.contextPath}/vehicles/update?id_vehicle=${vehicle.id}">
+                                                            <i class="fa fa-edit"></i>
+                                                        </a>
+                                                        <input type="hidden" name="vehicleId"
+                                                               value="${vehicle.id}">
+                                                        <input type="hidden" name="constructeur"
+                                                               value="${vehicle.constructeur}">
+                                                        <input type="hidden" name="model" value="${vehicle.modele}">
+                                                        <input type="hidden" id="deleteornot" name="deleteornot"
+                                                               value="false">
+                                                        <button type="submit" name="action" value="delete_vehicle"
+                                                                class="btn btn-danger">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
                                     </table>
                                 </div>
                             </div>

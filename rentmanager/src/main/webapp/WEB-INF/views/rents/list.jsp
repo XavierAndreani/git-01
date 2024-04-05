@@ -33,41 +33,38 @@
                                     <th>Debut</th>
                                     <th>Fin</th>
                                     <th>Action</th>
+
                                 </tr>
                                 <tr>
-<c:forEach items="${rents}" var="rents">
-    <td>${rents.id}.</td>
-    <td>${rents.id_client}</td>
-    <td>${rents.id_vehicle}</td>
+<c:forEach items="${reservations}" var="rents">
+
+    <td>${rents.id}</td>
+    <td>${rents.vehicle_id}</td>
+    <td>${rents.client_id}</td>
     <td>${rents.debut}</td>
     <td>${rents.fin}</td>
-                                        <a class="btn btn-primary disabled" href="${pageContext.request.contextPath}/cars?id=1">
-                                            <i class="fa fa-play"></i>
-                                        </a>
+                                    <td><a class="btn btn-primary disabled" href="${pageContext.request.contextPath}/rents?id=1">
+                                        <i class="fa fa-play"></i>
+                                    </a>
                                         <a class="btn btn-success disabled" href="#">
                                             <i class="fa fa-edit"></i>
                                         </a>
                                         <a class="btn btn-danger disabled" href="#">
                                             <i class="fa fa-trash"></i>
-                                        </a>
+                                        </a></td>
+
                                 </tr>
                                 </c:forEach>
                             </table>
                         </div>
-                        <!-- /.box-body -->
                     </div>
-                    <!-- /.box -->
                 </div>
-                <!-- /.col -->
             </div>
         </section>
-        <!-- /.content -->
     </div>
 
     <%@ include file="/WEB-INF/views/common/footer.jsp" %>
 </div>
-<!-- ./wrapper -->
-
 <%@ include file="/WEB-INF/views/common/js_imports.jsp" %>
 </body>
 </html>

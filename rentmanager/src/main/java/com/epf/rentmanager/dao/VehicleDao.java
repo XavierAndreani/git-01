@@ -9,17 +9,13 @@ import com.epf.rentmanager.exception.DaoException;
 import com.epf.rentmanager.model.Client;
 import com.epf.rentmanager.model.Vehicle;
 import com.epf.rentmanager.persistence.ConnectionManager;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class VehicleDao {
-	
-	private static VehicleDao instance = null;
+
 	private VehicleDao() {}
-	public static VehicleDao getInstance() {
-		if(instance == null) {
-			instance = new VehicleDao();
-		}
-		return instance;
-	}
+
 	
 	private static final String CREATE_VEHICLE_QUERY = "INSERT INTO Vehicle(constructeur, modele, nb_places) VALUES(?, ?, ?);";
 	private static final String DELETE_VEHICLE_QUERY = "DELETE FROM Vehicle WHERE id=?;";
@@ -66,23 +62,21 @@ public class VehicleDao {
 		return 0;
 	}
 
-	public Vehicle findById(long id) throws DaoException {
-		try{
-			Connection connexion = ConnectionManager.getConnection();
-			Statement statement = connexion.createStatement();
-			PreparedStatement preparedStatement= connexion.prepareStatement(FIND_VEHICLE_QUERY);
-			ResultSet resultSet= preparedStatement.executeQuery();
-			preparedStatement.setInt(1, (int) id);
-			String constructeur=resultSet.getString("constructeur");
-			String modele=resultSet.getString("modele");
-			int nb_places=resultSet.getInt("nb_places");
-			connexion.close();
-			resultSet.close();
-			return new Vehicle((int) id, constructeur, modele, nb_places);
-
-		} catch (SQLException e){
-			throw new DaoException(e);
+	public Vehicle findById(int id) throws DaoException {
+		try (Connection connexion = ConnectionManager.getConnection();
+			 PreparedStatement preparedStatement = connexion.prepareStatement(FIND_VEHICLE_QUERY)) {
+			preparedStatement.setLong(1, id);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			if (resultSet.next()) {
+				String constructeur = resultSet.getString("constructeur");
+				String modele = resultSet.getString("modele");
+				int nb_places = resultSet.getInt("nb_places");
+				return new Vehicle((int) id, constructeur, modele, nb_places);
+			}
+		} catch (SQLException e) {
+			throw new DaoException(e.getMessage(), e);
 		}
+		return null;
 	}
 
 	public List<Vehicle> findAll() throws DaoException {
