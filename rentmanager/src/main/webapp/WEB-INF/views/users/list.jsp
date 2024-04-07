@@ -45,9 +45,10 @@
            href="${pageContext.request.contextPath}/users/details?client_id=${clients.id}">
             <i class="fa fa-play"></i>
         </a>
-                                        <a class="btn btn-success disabled" href="#">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
+        <a class="btn btn-success"
+           href="${pageContext.request.contextPath}/users/update?client_id=${clients.id}">
+            <i class="fa fa-edit"></i>
+        </a>
     <a class="btn btn-danger" href="${pageContext.request.contextPath}/users/delete?id=${clients.id}">
         <i class="fa fa-trash"></i>
     </a>

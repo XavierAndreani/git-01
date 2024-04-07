@@ -24,6 +24,9 @@ public class VehicleService {
             if(vehicle.getConstructeur().isEmpty()){
                 throw new ServiceException("Pas de constructeur");
             }
+            if (vehicle.getModele().isEmpty()) {
+                throw new ServiceException("Le véhicule doit avoir un modèle.");
+            }
             if(vehicle.getNb_places()<=1){
                 throw new ServiceException("Nombre de place inférieur ou égal à 1");
             }

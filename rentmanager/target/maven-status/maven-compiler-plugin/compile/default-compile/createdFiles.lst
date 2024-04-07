@@ -5,6 +5,7 @@ com\epf\rentmanager\servlet\ClientCreateServlet.class
 com\epf\rentmanager\service\VehicleService.class
 com\epf\rentmanager\persistence\ConnectionManager.class
 com\epf\rentmanager\servlet\ClientDeleteServlet.class
+com\epf\rentmanager\servlet\ClientUpdateServlet.class
 com\epf\rentmanager\dao\ReservationDao.class
 com\epf\rentmanager\servlet\ReservationCreateServlet.class
 com\epf\rentmanager\servlet\VehicleCreateServlet.class

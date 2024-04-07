@@ -1,5 +1,6 @@
 package com.epf.rentmanager.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.epf.rentmanager.dao.ReservationDao;
@@ -21,10 +22,18 @@ public class ReservationService {
 
     public long create(Reservation reservation) throws ServiceException {
         try {
+            LocalDate debut = reservation.getDebut();
+            LocalDate fin = reservation.getFin();
+            if (debut.plusDays(7).isBefore(fin)) {
+                throw new ServiceException("Une reservation ne peut pas durer plus d'une semaine");
+            }
+            if (fin.isBefore(debut)) {
+                throw new ServiceException("Le début ne peut pas être après la fin");
+            }
             reservationDao.create(reservation);
             return reservation.getId();
         } catch (DaoException e) {
-            throw new RuntimeException(e);}
+            throw new ServiceException(e.getMessage());}
     }
 
     public long delete(Reservation reservation) throws ServiceException{
@@ -32,7 +41,7 @@ public class ReservationService {
             reservationDao.delete(reservation);
             return  reservation.getId();
         } catch (DaoException e) {
-            throw new RuntimeException(e);
+            throw new ServiceException(e.getMessage());
         }
     }
 
@@ -40,7 +49,7 @@ public class ReservationService {
         try {
             return(reservationDao.findResaByClientId(id));
         } catch (DaoException e) {
-            throw new RuntimeException(e);
+            throw new ServiceException(e.getMessage());
         }
 
     }
@@ -49,7 +58,7 @@ public class ReservationService {
         try {
             return(reservationDao.findResaByVehicleId(id));
         } catch (DaoException e) {
-            throw new RuntimeException(e);
+            throw new ServiceException(e.getMessage());
         }
 
     }
@@ -57,7 +66,7 @@ public class ReservationService {
         try {
             return(reservationDao.findResaById(id));
         } catch (DaoException e) {
-            throw new RuntimeException(e);
+            throw new ServiceException(e.getMessage());
         }
 
     }
@@ -65,7 +74,7 @@ public class ReservationService {
         try {
             return(reservationDao.findAll());
         } catch (DaoException e) {
-            throw new RuntimeException(e);
+            throw new ServiceException(e.getMessage());
         }
 
     }

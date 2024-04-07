@@ -1,5 +1,8 @@
 package com.epf.rentmanager.service;
 
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +38,22 @@ public class ClientService {
 			if (client.getNom().isEmpty()||client.getPrenom().isEmpty()){
 				throw new ServiceException("Client sans nom ou prénom");
 			}
+			if (client.getNom().length() < 3 || client.getPrenom().length() < 3) {
+				throw new ServiceException("Le nom et le prénom du client doivent avoir au moins 3 lettres.");
+			}
+			String mail = client.getEmail();
+			List<Client> listclients = clientDao.findAll();
+			for (Client client1 : listclients) {
+				if (client1.getEmail().equals(mail)) {
+					throw new ServiceException("L'email est déjà pris");
+				}
+			}
+			LocalDate naissance = client.getNaissance();
+			LocalDate actual = LocalDate.now();
+			long age = ChronoUnit.YEARS.between(naissance, actual);
+			if (age < 18) {
+				throw new ServiceException("Le client doit être majeur");
+			}
 			client.setNom(client.getNom().toUpperCase());
             clientDao.create(client);
 			return client.getId();
@@ -65,8 +84,15 @@ public class ClientService {
         try {
             return (clientDao.findAll());
         } catch (DaoException e) {
-            throw new RuntimeException(e);
+            throw new ServiceException(e.getMessage());
         }
     }
+	public void update(Client newClient) throws ServiceException {
+		try {
+			clientDao.update(newClient);
+		} catch (SQLException e) {
+			throw new ServiceException(e.getMessage());
+		}
+	}
 	
 }
